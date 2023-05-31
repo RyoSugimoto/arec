@@ -1,0 +1,194 @@
+---
+/**
+ * TODO: 記事清書・整理・スタイル調整（2〜3記事）
+ */
+import { getCollection, getEntryBySlug } from 'astro:content';
+import Layout from '@layouts/Layout.astro';
+import Hero from '@components/organisms/Hero.astro';
+import Container from '@components/organisms/Container.astro';
+import Spacer from '@components/organisms/Spacer.astro';
+import InlineSVG from '@components/atoms/InlineSVG.astro';
+import Icon from '@components/molecules/Icon.astro';
+import Feature from '@components/organisms/Feature.astro';
+import SectionHeading from '@components/organisms/SectionHeading.astro';
+import NotebookArticleList from '@components/partials/NotebookArticleList.astro';
+import heroImage from '@assets/images/hero-bg.jpg';
+import notebookImage from '@assets/images/notebook.jpg';
+/** SVGの絶対パス */
+/** 表示する記事の数 */
+const numberOfNotebookPosts = 6;
+/** `notebook` の全記事 */
+const notebookPosts = await getCollection('notebook');
+/** 公開日付が新しい順に並び替えた配列 */
+const notebookPostsSortedByPublishDate = Array.from(notebookPosts).sort((a, b) => {
+  return b.data.publishDate.getTime() - a.data.publishDate.getTime();
+});
+---
+
+{/**
+ * フロントページは暗めの色の `Hero` と `SiteHeader` を重ねるため、下記を設定する。
+ * `HeaderHeight` に `'0'` を設定し、後続の要素（ヒーロー）と重ねる。
+ * `eaderClearBackground` に `true` を設定し、 `SiteHeader` の背景色を透過させる。
+ * `HeaderColorScheme` に `'dark'` を設定し、文字色を白っぽくする。
+ * JavaScriptで `Hero` がビューポートに出たときの処理を行なう（当ファイルの `script` セクション） 。
+ */}
+<Layout
+  title="Arec. - とあるウェブ制作者の記録"
+  pageKey="front"
+  headerColorScheme="dark"
+  headerHeight="0"
+  headerClearBackground={true}
+>
+  <div data-observed="hero">
+    <Hero
+      image={heroImage}
+    >
+      <div class="front-hero-content">
+        <h1 class="front-hero-content__logo">
+          <InlineSVG
+            path="src/assets/svg/logo.svg"
+            fill="currentColor"
+            width="18rem"
+          />
+        </h1>
+        <p
+          class="front-hero-content__help"
+          aria-label="とあるウェブ制作者による記録"
+        >
+          <InlineSVG
+            path="src/assets/svg/subtitle.svg"
+            fill="currentColor"
+            width="14rem"
+          />
+        </p>
+        <div class="front-hero-content__indicator" data-hero-indicator>
+          <a
+            href="#hero-scroll-anchor"
+            class="front-hero-content__indicator__anchor"
+            aria-description="コンテンツまでスクロール"
+          ><Icon name="chevron-down" />Scroll</a>
+        </div>
+      </div>
+      <div id="hero-scroll-anchor"></div>
+    </Hero>
+  </div>
+  <div id="front-content">
+    <Container
+      maxWidth="xl"
+      isCentered={true}
+      sidePadding={2}
+    >
+      <Spacer size={8} />
+      <SectionHeading>Pickup</SectionHeading>
+      <Spacer size={4} />
+      <NotebookArticleList articles={notebookPostsSortedByPublishDate.slice(0, numberOfNotebookPosts)} />
+      <Spacer size={8} />
+      <SectionHeading>Contents</SectionHeading>
+      <Spacer size={4} />
+      <Feature
+        image={notebookImage}
+        title="Notebook"
+        description="主にウェブ制作にかかわる内容をまとめるコンテンツ。"
+        href="/notebook/"
+      />
+    </Container>
+    <Spacer size={6} />
+  </div>
+</Layout>
+
+<style lang="scss">
+  .front-hero-content {
+    $indicator-height: 4rem;
+    align-items: center;
+    background: rgba(31, 23, 23, .75);
+    color: var(--front-hero-fg-color, var(--COLOR--WHITE));
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    padding: 0 0 $indicator-height;
+    &__logo {
+      font-feature-settings: var(--FFS--PROPORTIONAL);
+      font-size: 5rem;
+      line-height: var(--LINE-HEIGHT--NONE, 1);
+      padding: 0 1rem;
+    }
+    &__help {
+      $decoration-margin: .5em;
+      $letter-spacing: .125em;
+      align-items: center;
+      display: flex;
+      font-feature-settings: var(--FFS--PROPORTIONAL);
+      font-size: clamp(12px, 1rem, 3.5vw);
+      font-weight: var(--FONT-WEIGHT--B);
+      letter-spacing: $letter-spacing;
+      line-height: var(--LINE-HEIGHT--SM, 1.25);
+      margin: 1.75rem 0 0;
+      padding: 0 1rem;
+      &::before, &::after {
+        background-color: currentColor;
+        display: block;
+        content: "";
+        height: var(--PX-TO-REM);
+        width: 2em;
+      }
+      &::before {
+        // `letter-spacing` と同じ値を足す。
+        margin-right: calc(.5em + #{$letter-spacing});
+      }
+      &::after {
+        margin: 0 0 0 .5em;
+      }
+    }
+    &__indicator {
+      align-items: center;
+      display: flex;
+      font-family: var(--global-display-font-family);
+      font-feature-settings: var(--FFS--PROPORTIONAL);
+      font-size: 1rem;
+      font-weight: var(--FONT-WEIGHT--M);
+      height: $indicator-height;
+      line-height: var(--LINE-HEIGHT--NONE, 1);
+      inset: auto auto 0;
+      position: absolute;
+      &__anchor {
+        align-items: center;
+        color: inherit;
+        display: flex;
+        justify-content: center;
+        text-decoration: none;
+      }
+    }
+  }
+</style>
+
+<script>
+  // `Hero` がビューポートから出たらサイトヘッダーのスタイルを変更する。
+  /** `Hero` 要素 */
+  const hero = document.querySelector('[data-observed="hero"]');
+  /** `Scroll` */
+  const indicator = document.querySelector('[data-hero-indicator]');
+  /** サイトヘッダー */
+  const siteHeader = document.querySelector('#site-header');
+  if (hero !== null && siteHeader instanceof HTMLElement) {
+    const heroObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // `Hero` がビューポート内
+          siteHeader.classList.add('site-header--transparent');
+          siteHeader.style.setProperty('--site-header-height', '0');
+          siteHeader.style.setProperty('--site-header-fg-color', 'var(--COLOR--WHITE, #fff)');
+        } else {
+          // `Hero` がビューポート外
+          siteHeader.classList.remove('site-header--transparent');
+          siteHeader.style.removeProperty('--site-header-height');
+          siteHeader.style.removeProperty('--site-header-fg-color');
+        }
+      })
+    }, {
+      // `Hero` が完全に隠れるより少し前に発火させる。
+      rootMargin: '-10% 0px 0px',
+    });
+    heroObserver.observe(hero);
+  }
+</script>

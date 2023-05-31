@@ -1,0 +1,166 @@
+---
+import { Picture, Image } from '@astrojs/image/components';
+import CategoryLabel from '@components/atoms/CategoryLabel.astro';
+import ImagePlaceholder from '@components/atoms/ImagePlaceholder.astro';
+import Frame from '@components/atoms/Frame.astro';
+import Icon from '@components/molecules/Icon.astro';
+export interface Props {
+  heading:string;
+  url:string;
+  thumbnail?:string;
+  excerpt?:string;
+  meta?:string;
+  categories?:Array<string>;
+  isClickable?:boolean;
+}
+const {
+  heading,
+  url,
+  thumbnail = '',
+  meta = '',
+  categories = ['default'],
+  isClickable = false,
+} = Astro.props;
+---
+
+<div class="card" data-is-clickable={String(isClickable)}>
+  <div class="card__thumbnail">
+    <div class="card__thumbnail__inner">
+      <Frame aspectRatio="16/9">
+        {
+          /**
+           * # Pictureコンポーネントについて
+           * `fit` プロパティと `position` プロパティは
+           * Sharpを導入しないと動作しない。
+           * @see https://docs.astro.build/ja/guides/integrations-guide/image/#installing-sharp-optional
+           */
+        }
+        {thumbnail && <Picture
+          src={thumbnail}
+          alt=""
+          widths={[1536, 375]}
+          sizes="(max-width: 800px) 100vw, 800px"
+          aspectRatio="16:9"
+          fit="cover"
+          position="center"
+        /> || <ImagePlaceholder /> }
+      </Frame>
+    </div>
+  </div>
+  <div class="card__content">
+    <div class="card__categories" aria-label="記事のカテゴリ">
+      {categories.length !== 0 &&
+        categories.map((categorySlug:string) => {
+          return <CategoryLabel slug={categorySlug} />
+        }) ||
+        <CategoryLabel slug="default" />
+      }
+    </div>
+    <div class="card__title">
+      {heading}
+    </div>
+    <div class="card__meta">
+      {meta && meta}
+    </div>
+    <div class="card__action">
+      <a
+        href={url}
+        title={`${heading}`}
+        class="card__link"
+      ><Icon name="chevron-right" />この記事を読む</a>
+    </div>
+  </div>
+</div>
+
+<style lang="scss">
+  @use '@assets/css/tools' as t;
+  .card {
+    background-color: var(--card-bg-color, var(--global-upper-base-color));
+    border-color: var(--card-border-color, var(--global-upper-border-color));
+    border-style: var(--card-border-style, solid);
+    border-width: var(--card-border-width, var(--PX-TO-REM));
+    border-radius: var(--card-border-radius, var(--RADIUS--RG));
+    color: var(--card-fg-color, var(--global-upper-text-color));
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr auto;
+    max-width: var(--card-max-width, 640px);
+    overflow: hidden;
+    position: relative;
+    transition:
+      background-color .3s ease-out 0s,
+      transform .2s ease-out 0s;
+    &[data-is-clickable=true] {
+      --card-clickable-content: "";
+      @mixin hover-style {
+        background-color: var(--card-bg-color-focused, var(--global-upper-base-focus-color));
+        --card-thumbnail-transform: scale(1);
+      }
+      &:focus-within {
+        @include hover-style;
+      }
+      &:hover {
+        @include t.hover {
+          @include hover-style;
+        }
+      }
+      &:active {
+        transform: scale(.975);
+      }
+    }
+    &__thumbnail {
+      background-color: var(--card-thumbnail-bg-color, var(--COLOR--WARM-GRAY-9));
+      overflow: hidden;
+      position: relative;
+      &__inner {
+        transform: var(--card-thumbnail-transform, scale(1.05));
+        transition: transform 2.4s cubic-bezier(.2, .8, .4, .9) 0s;
+      }
+    }
+    &__content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--UNIT);
+      justify-content: flex-start;
+      padding: var(--card-content-padding, 1rem);
+    }
+    &__title {
+      font-size: var(--card-title-font-size, 1.125rem);
+      font-feature-settings: var(--FFS--PROPORTIONAL) 1;
+      font-weight: var(--FONT-WEIGHT--B);
+      line-height: var(--card-title-line-height, var(--LINE-HEIGHT--SM));
+    }
+    &__categories {
+      align-items: flex-start;
+      display: flex;
+      gap: .25rem;
+    }
+    &__meta {
+      font-size: var(--card-meta-font-size, var(--FONT-SIZE--SM));
+      line-height: var(--card-meta-line-height, var(--LINE-HEIGHT--SM));
+    }
+    &__action {
+      // 下に寄せる。
+      margin-block-start: auto;
+      position: static;
+    }
+    &__link {
+      @include t.box-shadow();
+      background-color: var(--card-link-bg-color, var(--global-primary-color));
+      border-radius: var(--card-link-radius, var(--RADIUS--FULL));
+      color: var(--card-link-fg-color, var(--COLOR--GRAY-1));
+      display: inline-flex;
+      font-feature-settings: var(--FFS--PROPORTIONAL) 1;
+      font-size: var(--FONT-SIZE--SM);
+      font-weight: var(--card-link-font-weight, var(--FONT-WEIGHT--B));
+      line-height: var(--LINE-HEIGHT--NONE);
+      padding: .5rem .75rem;
+      text-decoration: none;
+      &::after {
+        content: var(--card-clickable-content, none);
+        inset: 0;
+        position: absolute;
+      }
+    }
+  }
+</style>

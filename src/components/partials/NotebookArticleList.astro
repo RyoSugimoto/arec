@@ -1,0 +1,31 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ArticleList from '@components/organisms/ArticleList.astro';
+import Card from '@components/organisms/Card.astro';
+type NotebookEntry = CollectionEntry<'notebook'>;
+export interface Props {
+  /** コレクション `notebook` のエントリーの配列 */
+  articles:Array<NotebookEntry>;
+}
+const { articles = [] } = Astro.props;
+
+const publicArticles = articles.filter((entry:NotebookEntry) => {
+  return !entry.data.isDraft;
+});
+---
+
+<ArticleList>
+  {publicArticles.map((entry:NotebookEntry) => {
+    const thumbnail = entry.data.thumbnail;
+    const modify = entry.data.modifyDate || entry.data.publishDate;
+    const categories = entry.data.categories || [];
+    return <Card
+      heading={entry.data.title}
+      url={`/notebook/${entry.slug}`}
+      thumbnail={thumbnail}
+      meta={`更新: ${modify.toLocaleDateString('ja-JP', {})}`}
+      categories={categories.map(item => item.id)}
+      isClickable={true}
+    />
+  })}
+</ArticleList>

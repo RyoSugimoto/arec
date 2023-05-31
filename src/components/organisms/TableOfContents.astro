@@ -1,0 +1,70 @@
+---
+export interface TableOfContentsItem {
+  slug:string;
+  text:string;
+}
+export interface Props {
+  headings:Array<TableOfContentsItem>;
+  description?:string;
+  title?:string;
+}
+const {
+  headings,
+  description = '',
+  title = 'この記事の目次',
+} = Astro.props;
+---
+
+<details
+  class="table-of-contents"
+  aria-description={description}
+>
+  <summary class="table-of-contents__title">{title}</summary>
+  <div class="table-of-contents__body">
+    {description &&
+      <div class="table-of-contents__description">
+        {description}
+      </div>
+    }
+    <ol class="table-of-contents__list">{
+      headings.map((heading:TableOfContentsItem) => {
+        return <li class="table-of-contents__item">
+          <a
+            href={`#${heading.slug}`}
+            class="table-of-contents__anchor"
+          >{heading.text}</a>
+        </li>
+      })
+    }</ol>
+  </div>
+</details>
+
+<style lang="scss">
+  .table-of-contents {
+    background-color: var(--table-of-contents-bg-color, var(--global-upper-base-color));
+    border-radius: var(--RADIUS--RG);
+    bcolor: var(--table-of-contents-fg-color, var(--global-upper-text-color));
+    overflow: hidden;
+    &__title {
+      background-color: var(--table-of-contents-title-bg-color, var(--global-primary-color));
+      color: var(--table-of-contents-title-fg-color, var(--global-primary-inverse-color));
+      font-feature-settings: var(--FFS--PROPORTIONAL);
+      font-weight: var(--FONT-WEIGHT--B);
+      line-height: var(--LINE-HEIGHT--SM);
+      padding: .5rem;
+    }
+    &__body {
+      display: grid;
+      gap: .5rem;
+      padding: var(--UNIT--2);
+    }
+    &__list {
+      line-height: var(--LINE-HEIGHT--RG);
+      list-style: decimal;
+      padding: 0 0 0 1.5em;
+    }
+    &__item {
+      margin: .75em 0;
+    }
+  }
+</style>

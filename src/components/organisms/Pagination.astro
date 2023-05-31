@@ -1,0 +1,62 @@
+---
+export interface Props {
+  currentPage:string;
+  numberOfTheLastPage:string;
+  prevUrl?:string;
+  nextUrl?:string;
+}
+const {
+  currentPage,
+  numberOfTheLastPage,
+  prevUrl = '',
+  nextUrl = '',
+} = Astro.props;
+---
+
+<div class="pagination">
+  <div class="pagination__current">
+    <div>現在のページ: <b>{currentPage}/{numberOfTheLastPage}</b></div>
+  </div>
+  <div class="pagination__link-group">
+    {prevUrl &&
+      <a
+        class="pagination__link pagination__link--prev"
+        href={prevUrl}
+      >前のページへ</a>
+    }
+    {nextUrl &&
+      <a
+        class="pagination__link pagination__link--next"
+        href={nextUrl}
+      >次のページへ</a>
+    }
+  </div>
+</div>
+
+<style lang="scss">
+  .pagination {
+    display: grid;
+    gap: .5rem;
+    line-height: var(--pagination-line-height, var(--LINE-HEIGHT--SM));
+    &__current {
+      font-size: var(--FONT-SIZE--SM);
+    }
+    &__link-group {
+      display: flex;
+    }
+    &__link {
+      font-weight: var(--FONT-WEIGHT--B);
+      & + * {
+        border-color: var(--root-fg-color);
+        border-style: solid;
+        border-width: 0 0 0 var(--PX-TO-REM);
+        margin-inline-start: .75em;
+        padding-inline-start: .75em;
+      }
+      &--prev {
+      }
+      &--next {
+      }
+    }
+  }
+</style>

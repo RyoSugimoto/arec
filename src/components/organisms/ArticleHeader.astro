@@ -1,0 +1,86 @@
+---
+import CategoryLabel from '@components/atoms/CategoryLabel.astro';
+export interface Poprs {
+  title:string;
+  href?:string;
+  date?:Date;
+  modify?:Date;
+  categories:Array<string>;
+}
+const {
+  title,
+  href = '',
+  date = '',
+  modify = '',
+  categories = [''],
+} = Astro.props;
+
+// 更新日が設定されていない場合は公開日と同じにする。
+const modifyDisplay = modify ? modify : date;
+---
+
+<header class="article-header">
+  <div class="article-header__inner">
+    {categories.length !== 0 &&
+      <div class="article-header__categories" aria-label="記事のカテゴリ">
+        {
+          categories.map((categorySlug:string) => {
+            return <CategoryLabel slug={categorySlug} />
+          })
+        }
+      </div>
+    }
+    <h1 class="article-header__title">
+      {href
+        && <a href={href}>{title}</a>
+        || <span>{title}</span>
+      }
+    </h1>
+    {date &&
+      <div class="article-header__date">
+        公開日: <time
+          datetime={date.toISOString()}
+        >{date.toLocaleDateString('ja-JP', {
+          // timeZone: 'UTC',
+        })}</time>
+        - 更新日: <time
+          datetime={modifyDisplay.toISOString()}
+        >{modifyDisplay.toLocaleDateString('ja-JP', {
+          // timeZone: 'UTC',
+        })}</time>
+      </div>
+    }
+  </div>
+</header>
+
+<style lang="scss">
+  .article-header {
+    &__inner {
+      border-color: var(--article-header-border-color, currentColor);
+      border-style: solid;
+      border-width: 0 0 var(--PX-TO-REM) 0;
+      display: grid;
+      gap: var(--UNIT--2);
+      padding: 0 0 var(--UNIT--3) 0;
+    }
+    &__title {
+      font-family: var(--global-display-font-family);
+      font-feature-settings: var(--FFS--PROPORTIONAL);
+      font-size: var(--article-header-title-font-size, var(--FONT-SIZE--XL, 2rem));
+      font-weight: var(--article-header-title-font-weight, var(--FONT-WEIGHT--B));
+      line-height: var(--article-header-title-line-height, var(--LINE-HEIGHT--RG));
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+    }
+    &__date {
+      line-height: var(--LINE-HEIGHT--SM);
+    }
+    &__categories {
+      align-items: flex-start;
+      display: flex;
+      gap: .25rem;
+    }
+  }
+</style>

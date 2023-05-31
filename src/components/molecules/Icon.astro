@@ -1,0 +1,30 @@
+---
+// NOTE: 一見 `atom` に分類されそうではあるが、内部で `InlineSVG` コンポーネントを使用するため、 `molecule` としている。
+// NOTE: ストロークだけで構成されたアイコンに最適化したスタイルを設定している。
+import InlineSVG from '@components/atoms/InlineSVG.astro';
+import { resolve } from 'path';
+export interface Props {
+  /** アイコン用SVGのファイル名（拡張子なし） */
+  name:string;
+  /** アイコン用のSVGを格納するディレクトリの相対パス */
+  directory?:string;
+}
+const {
+  name,
+  directory = 'src/assets/icons',
+} = Astro.props;
+const iconPath = resolve(directory, `${name}.svg`);
+---
+
+{/* NOTE: 用途が限定的なので、スタイルは固定している。 */}
+<InlineSVG
+  path={iconPath}
+  fill="none"
+  display="inline-block"
+  height="auto"
+  stroke="currentColor"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  stroke-width="2px"
+  width="1em"
+/>

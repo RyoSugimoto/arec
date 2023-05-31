@@ -1,0 +1,70 @@
+---
+import { readFileSync } from 'fs';
+import { getPath } from '~/tools/functions';
+export interface InlineSVGStyles {
+  'fill'?:string;
+  'stroke'?:string;
+  'stroke-linecap'?:'bat' | 'round' | 'square' | 'inherit';
+  'stroke-linejoin'?:'miter' | 'round' | 'bevel' | 'inherit';
+  'stroke-width'?:string;
+  'width'?:string;
+  'height'?:string;
+  'display'?:'block' | 'inline-block' | 'inline';
+}
+export interface Props extends InlineSVGStyles {
+  /** 対象のSVGのパス（プロジェクトルートからの相対パス） */
+  path:string;
+  /** SVGが本来持つスタイルを無視するかどうか（初期値は `true` ） */
+  overrideStyles?:boolean;
+}
+const { path, overrideStyles = true, ...props } = Astro.props;
+let styleValue:string = '';
+for (const [key, value] of Object.entries(props)) {
+  styleValue += `--inline-svg-${key}: ${value}; `;
+}
+const svg = (() => {
+  try {
+    return readFileSync(getPath(path));
+  } catch(e) {
+    console.error(e);
+    return '';
+  }
+})();
+---
+
+{
+/**
+ * NOTE: `属性名={真偽値}` のような書き方をすると、属性の有無が設定できる（属性の値が `true` や `false` になるわけではない）。
+ * NOTE: 本来のSVGが持つスタイルを活かすには `false` を設定する。
+ * NOTE: 部分的にスタイルを上書きすることができないが、そんなことは普通しないと思うので、これくらいの実装にしている。
+ */
+}
+<span
+  class="inline-svg"
+  style={styleValue}
+  data-inline-svg-wrapper
+  data-override-styles={overrideStyles}
+>{svg}</span>
+
+<style>
+  .inline-svg {
+    display: var(--inline-svg-display, block);
+  }
+</style>
+
+<style is:global lang="scss">
+  [data-inline-svg-wrapper][data-override-styles] {
+    // `overrideStyles` が `true` のときのみスタイルを設定。
+    svg {
+      display: var(--inline-svg-inner-display, block);
+      fill: var(--inline-svg-fill, currentColor);
+      height: var(--inline-svg-height, auto);
+      stroke: var(--inline-svg-stroke, none);
+      stroke-linecap: var(--inline-svg-stroke-linecap, square);
+      stroke-linejoin: var(--inline-svg-stroke-linejoin, miter);
+      stroke-width: var(--inline-svg-stroke-width, 0);
+      vertical-align: var(--inline-svg-vertical-align, baseline);
+      width: var(--inline-svg-width, auto);
+    }
+  }
+</style>

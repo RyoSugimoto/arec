@@ -1,0 +1,58 @@
+// # Sassのミックスインや関数を定義するファイル
+// * このファイルには、CSSに出力されるものは書かないこと。
+@use './settings' as s;
+
+// ## ブラウザの配色設定が `dark` のときに内包するスタイルを適用する。
+@mixin dark() {
+  @media (prefers-color-scheme: dark) {
+    @content;
+  }
+}
+
+// ## ブラウザの配色設定が `light` のときに内包するスタイルを適用する。
+@mixin light() {
+  @media (prefers-color-scheme: light) {
+    @content;
+  }
+}
+
+// ## ビューポートが指定したサイズ以上のときに内包するスタイルを適用する。
+// @param $breakpoint {string} `_settings.scss` で設定したビューポートのキー
+@mixin over($breakpoint: "SM") {
+  @if map-has-key(s.$VIEWPORTS, $breakpoint) {
+    $vw: map-get(s.$VIEWPORTS, $breakpoint);
+    @media (width >= #{$vw}px) {
+      @content;
+    }
+  }
+  @else {
+    @error "ブレークポイント「#{$breakpoint}」は定義されていません。指定できるブレークポイントは、#{map-keys(s.$VIEWPORTS)}のいずれかです。";
+  }
+}
+
+// ## ビューポートが指定したサイズより狭いときに内包するスタイルを適用する。
+// @param $breakpoint {string} `_settings.scss` で設定したビューポートのキー
+@mixin under($breakpoint: "SM") {
+  @if map-has-key(s.$VIEWPORTS, $breakpoint) {
+    $vw: map-get(s.$VIEWPORTS, $breakpoint);
+    @media (width < #{$vw}px) {
+      @content;
+    }
+  }
+  @else {
+    @error "ブレークポイント「#{$breakpoint}」は定義されていません。指定できるブレークポイントは、#{map-keys(s.$VIEWPORTS)}のいずれかです。";
+  }
+}
+
+// ホバーに対応したデバイス（非タッチデバイス）でのみホバーのスタイルを適用する。
+// `:hover` セレクタの内側で呼び出す。
+@mixin hover() {
+  @media (any-hover: hover) {
+    @content;
+  }
+}
+
+// ボックスシャドウを適用する。
+@mixin box-shadow($color: rgba(0, 0, 0, .125)) {
+  box-shadow: .25rem .25rem .5rem $color;
+}

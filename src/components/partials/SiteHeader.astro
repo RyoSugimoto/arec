@@ -1,0 +1,163 @@
+---
+import Container from '@components/organisms/Container.astro';
+import SiteLogo from '@components/partials/SiteLogo.astro';
+import SiteMainMenu from '@components/partials/SiteMainMenu.astro';
+import Drawer from '@components/partials/Drawer.astro';
+import A11yControl from '@components/partials/A11yControl.astro';
+export interface Props {
+  id?:string;
+  isSticky?:boolean;
+  colorScheme?:string;
+  height?:string;
+  clearBackground?:boolean;
+}
+const {
+  id = '',
+  isSticky = false,
+  colorScheme = '',
+  height = 'auto',
+  clearBackground = true,
+} = Astro.props;
+const classList = [
+  'site-header',
+];
+if (isSticky) classList.push('site-header--sticky');
+if (clearBackground) classList.push('site-header--transparent');
+---
+
+<header
+  id={id ? id : ''}
+  class:list={classList}
+  data-site-header-color-scheme={colorScheme}
+  style=`
+    --site-header-height: ${height};
+  `
+>
+  <Container
+    sidePadding={2}
+    maxWidth="xl"
+    isCentered={true}
+  >
+    <div class="site-header__line">
+      <div class="site-header__line__group site-header__line__group--start">
+        { /* 左詰め */ }
+        <div
+          class="site-header__line__item site-header__line__item--logo"
+          data-drawer-inert
+        >
+          <SiteLogo tag="div" />
+        </div>
+        <div
+          class="site-header__line__group site-header__line__item site-header__line__item--menu"
+          data-drawer-inert
+        >
+          <SiteMainMenu />
+        </div>
+      </div>
+      <div class="site-header__line__group site-header__line__group--center">
+        { /* 中央 */ }
+      </div>
+      <div class="site-header__line__group site-header__line__group--end">
+        { /* 右詰め */ }
+        <div class="site-header__line__item site-header__line__item--a11y">
+          <A11yControl />
+        </div>
+        <div
+          class="site-header__line__item site-header__line__item--drawer"
+        >
+          <Drawer />
+        </div>
+      </div>
+    </div>
+  </Container>
+</header>
+
+<style lang="scss">
+  @use '@assets/css/tools' as t;
+  .site-header {
+    $menu-breakpoint: "SM";
+    background: var(--site-header-bg, var(--global-dark-base-color));
+    color: var(--site-header-fg-color, var(--site-header-default-fg-color, var(--global-dark-text-color)));
+    height: var(--site-header-height);
+    inset: 0 0 auto 0;
+    position: var(--site-header-position);
+    transition:
+      background-color .3s ease-out .1s,
+      color .3s ease-out .1s,
+      height .3s ease-out 0s;
+    z-index: 10;
+    &[data-site-header-color-scheme=dark] {
+      --site-header-default-fg-color: var(--COLOR--WHITE);
+    }
+    &--transparent {
+      --site-header-bg: none #00000000;
+      backdrop-filter: none;
+      pointer-events: none;
+    }
+    &--sticky {
+      --site-header-position: sticky;
+    }
+    &__line {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      &__group {
+        align-items: center;
+        display: flex;
+        &--start {
+          justify-content: flex-start;
+        }
+        &--center {
+          justify-content: center;
+        }
+        &--end {
+          justify-content: flex-end;
+        }
+      }
+      &__item {
+        &--logo {
+          padding: .5rem 0;
+        }
+        &--menu {
+          margin-left: 2rem;
+          padding: .5rem 0;
+          @include t.under($menu-breakpoint) {
+            display: none;
+          }
+        }
+        &--a11y {
+        }
+        &--drawer {
+          margin-left: .5rem;
+          // メニューボタンを右端に寄せる。
+          margin-right: -1rem; // `Container` の `sidePadding` の値をマイナス
+          @include t.over($menu-breakpoint) {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+</style>
+
+<style is:global lang="scss">
+  .site-header {
+    &--transparent {
+      // 子要素のスタイルを設定するため `style[is:global]` 内に記述。
+      // `SiteHeader` が `transparent` のとき、
+      // `SiteHeader` と重なった部分が操作できなくなるのを防ぐために
+      // `SiteHeader` 全体に `pointer-event: none` を設定した上で、
+      // `SiteHeader` 内の特定の要素だけを操作可能にする。
+      a,
+      button,
+      label,
+      input,
+      textarea,
+      select,
+      summary {
+        pointer-events: all;
+      }
+    }
+  }
+</style>

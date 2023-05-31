@@ -1,0 +1,29 @@
+{
+  "name": "astro-2",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/image": "^0.16.7",
+    "@astrojs/svelte": "^2.2.0",
+    "@fontsource/noto-sans-jp": "^5.0.0",
+    "@fontsource/sen": "^5.0.0",
+    "astro": "^2.5.5",
+    "shiki": "^0.14.2",
+    "svelte": "^3.54.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.1.1",
+    "sass": "^1.62.1",
+    "sharp": "^0.32.1"
+  },
+  "volta": {
+    "node": "16.19.0"
+  }
+}

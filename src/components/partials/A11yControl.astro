@@ -1,0 +1,207 @@
+---
+import A11yOptions from '@components/molecules/A11yOptions.svelte';
+---
+
+<span data-a11y-control-start tabindex="0"></span>
+<details class="a11y-control" data-a11y-control>
+  <summary class="a11y-control__toggler">見た目の調整</summary>
+  <div class="a11y-control__content">
+    <div class="a11y-control__content__inner">
+      <p class="a11y-control__description" data-a11y-control-start-target tabindex="-1">このウェブサイトのデザインを読みやすいように調整できます。</p>
+      <section class="a11y-control__section">
+        <A11yOptions
+          client:only="svelte"
+          name="font-size"
+          label="文字の大きさを選択"
+          defaultValue="rg"
+          options={[
+            {
+              label: '標準',
+              value: 'rg',
+            },
+            {
+              label: '小',
+              value: 'sm',
+            },
+            {
+              label: '大',
+              value: 'md',
+            },
+            {
+              label: '特大',
+              value: 'lg',
+            },
+          ]}
+        />
+      </section>
+      <section class="a11y-control__section">
+        <A11yOptions
+          client:only="svelte"
+          name="color-scheme"
+          label="配色を選択"
+          defaultValue="default"
+          options={[
+            {
+              label: '規定',
+              value: 'default',
+            },
+            {
+              label: '明るい',
+              value: 'light',
+            },
+            {
+              label: '暗い',
+              value: 'dark',
+            },
+          ]}
+        />
+      </section>
+      <div class="a11y-control__action">
+        <button type="button" class="a11y-control__closer" data-a11y-control-closer data-a11y-control-end-target="">閉じる</button>
+      </div>
+      <div class="a11y-control__help">このウィンドウは <kbd>esc</kbd> キーでも閉じることができます。</div>
+    </div>
+  </div>
+</details>
+<span data-a11y-control-end tabindex="0"></span>
+
+<style lang="scss">
+  .a11y-control {
+    font-family: sans-serif;
+    font-size: clamp(14px, 1rem, 18px);
+    line-height: var(--LINE-HEIGHT--RG);
+    position: relative;
+    &__toggler {
+      background-color: var(--global-primary-color);
+      border-radius: var(--RADIUS--FULL);
+      color: var(--global-primary-inverse-color);
+      display: block;
+      font-feature-settings: var(--FFS--PROPORTIONAL);
+      font-size: 100%;
+      font-weight: var(--FONT-WEIGHT--B);
+      line-height: var(--LINE-HEIGHT--SM);
+      padding: .25em .75em;
+      &::-webkit-details-marker {
+        display: none;
+      }
+    }
+    &__content {
+      color: var(--a11y-control-content-fg-color, var(--COLOR--WHITE));
+      inset: auto 0;
+      padding: .5rem;
+      position: fixed;
+      max-width: 640px;
+      margin: auto;
+      width: 100vw;
+      z-index: 10000;
+      &__inner {
+        background-color: var(--a11y-control-content-bg-color, rgba(0, 0, 0, .75));
+        border: var(--PX-TO-REM--2) solid var(--COLOR--WHITE);
+        border-radius: var(--RADIUS--RG);
+        padding: 1em .75em;
+      }
+    }
+    &__heading {
+      font-feature-settings: var(--FFS--PROPORTIONAL);
+      font-size: 150%;
+      font-weight: var(--FONT-WEIGHT--B);
+      line-height: var(--LINE-HEIGHT--SM);
+    }
+    &__description {
+      font-weight: var(--FONT-WEIGHT--B);
+      line-height: var(--LINE-HEIGHT--RG);
+    }
+    &__section {
+      margin: 1em 0;
+    }
+    &__action {
+      margin: 1em 0 0;
+    }
+    &__closer {
+      align-items: center;
+      background-color: var(--global-primary-color);
+      border: 0;
+      border-radius: var(--RADIUS--FULL);
+      color: var(--global-primary-inverse-color);
+      display: inline-flex;
+      line-height: var(--LINE-HEIGHT--SM);
+      text-align: center;
+      padding: .5em 1em;
+    }
+    &__help {
+      margin: .5em 0 0;
+    }
+  }
+</style>
+
+<script>
+interface A11yOptionsDetail {
+  name:string;
+  optionValue:string;
+}
+
+declare global {
+  interface WindowEventMap {
+    'a11y-options-change': CustomEvent<A11yOptionsDetail>;
+  }
+}
+
+window.addEventListener('a11y-options-change', ({detail}) => {
+  document.documentElement.setAttribute(`data-a11y-option-${detail.name}`, detail.optionValue);
+})
+
+const control = document.querySelector('[data-a11y-control]');
+const start = document.querySelector('[data-a11y-control-start]');
+const startTarget = document.querySelector('[data-a11y-control-start-target]');
+const end = document.querySelector('[data-a11y-control-end]');
+const endTarget = document.querySelector('[data-a11y-control-end-target]');
+const closer = document.querySelector('[data-a11y-control-closer]');
+let isOpen = false;
+/**
+ * 閉じる。
+ */
+const closeControl = () => {
+  if (control instanceof HTMLDetailsElement) {
+    control.open = false;
+  }
+}
+const keyDownHandler = (event:KeyboardEvent) => {
+  if (['Escape', 'Esc'].indexOf(event.key) !== -1) {
+    closeControl();
+  }
+}
+/**
+ * スタートのフォーカストラップにフォーカスする。
+ */
+const focusStart = () => {
+  if (isOpen && startTarget instanceof HTMLElement) {
+    startTarget?.focus();
+  }
+}
+if (control instanceof HTMLDetailsElement) {
+  isOpen = control.open;
+  if (isOpen) {
+    focusStart();
+    window.addEventListener('keydown', keyDownHandler);
+  }
+  control.addEventListener('toggle', event => {
+    isOpen = control.open;
+    if (isOpen) {
+      focusStart();
+      window.addEventListener('keydown', keyDownHandler);
+    } else {
+      window.removeEventListener('keydown', keyDownHandler);
+    }
+  });
+}
+start?.addEventListener('focus', focusStart);
+end?.addEventListener('focus', event => {
+  if (isOpen && endTarget instanceof HTMLElement) {
+    endTarget?.focus();
+  }
+});
+closer?.addEventListener('click', (event:Event) => {
+  event.preventDefault();
+  closeControl();
+});
+</script>

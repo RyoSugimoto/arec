@@ -1,0 +1,21 @@
+---
+
+---
+
+<div
+  class="global-grid"
+  {...Astro.props}
+>
+  <slot />
+</div>
+
+<style>
+  .global-grid {
+    display: grid;
+    gap: 0;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    min-height: calc(var(--svh, 1vh) * 100);
+    min-height: 100svh;
+  }
+</style>

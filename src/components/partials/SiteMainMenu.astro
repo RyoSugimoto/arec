@@ -1,0 +1,67 @@
+---
+import mainMenu from '@assets/data/main-menu.js';
+---
+
+<nav
+  class="main-menu"
+  aria-label="メインメニュー"
+>
+  <ul class="main-menu__list">
+    {mainMenu.map((item, index) => {
+      return <li class="main-menu__item">
+        <a href={item.href} class="main-menu__link">{item.label}</a>
+      </li>;
+    })}
+  </ul>
+</nav>
+
+<style lang="scss">
+  @use '@assets/css/tools' as t;
+  .main-menu {
+    font-family: var(--global-display-font-family);
+    font-feature-settings: var(--FFS--PROPORTIONAL);
+    font-size: var(--FONT-SIZE--RG);
+    font-weight: var(--FONT-WEIGHT--M);
+    line-height: var(--LINE-HEIGHT--SM, 1.25);
+    &__list {
+      align-items: flex-start;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+    &__item {
+      margin: .25rem 1.5rem .25rem 0;
+    }
+    &__link {
+      color: inherit;
+      display: inline-block;
+      padding: calc(var(--PX-TO-REM) * 4) 0;
+      position: relative;
+      text-decoration: none;
+      &::after {
+        background-color: currentColor;
+        opacity: .75;
+        content: "";
+        inset: auto 0 0 0;
+        height: calc(var(--PX-TO-REM) * 1);
+        position: absolute;
+        transform: var(--site-main-menu-decoration-transform, scale(0, 1));
+        transform-origin: var(--site-main-menu-decoration-transform-origin, 100% 0);
+        transition: transform .3s ease-out 0s;
+        width: 100%;
+      }
+      @mixin hover-style {
+        --site-main-menu-decoration-transform: scale(1, 1);
+        --site-main-menu-decoration-transform-origin: 0 0;
+      }
+      &:focus-visible {
+        @include hover-style;
+      }
+      &:hover {
+        @include t.hover {
+          @include hover-style;
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import Container from '@components/organisms/Container.astro';
+export interface Props {
+}
+const {} = Astro.props;
+---
+
+<div class="page-header">
+  <Container
+    sidePadding={2}
+    maxWidth="xl"
+    isCentered={true}
+  >
+    <slot />
+  </Container>
+</div>
+
+<style lang="scss">
+  .page-header {
+  }
+</style>

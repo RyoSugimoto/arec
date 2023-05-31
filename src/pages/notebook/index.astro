@@ -1,0 +1,61 @@
+---
+import { getCollection, getEntryBySlug } from 'astro:content';
+import Layout from '@layouts/Layout.astro';
+import Breadcrumb from '@components/organisms/Breadcrumb.astro';
+import Spacer from '@components/organisms/Spacer.astro';
+import PageHeader from '@components/organisms/PageHeader.astro';
+import PageTitle from '@components/organisms/PageTitle.astro';
+import Container from '@components/organisms/Container.astro';
+import NotebookArticleList from '@components/partials/NotebookArticleList.astro';
+import SectionHeading from '@components/organisms/SectionHeading.astro';
+import LinkButton from '@components/atoms/LinkButton.astro';
+import Icon from '@components/molecules/Icon.astro';
+/** 表示する記事の数 */
+const numberOfNotebookPosts = 6;
+/** `notebook` の全記事 */
+const notebookPosts = await getCollection('notebook');
+/** 公開日付が新しい順に並び替えた配列 */
+const notebookPostsSortedByPublishDate = Array.from(notebookPosts).sort((a, b) => {
+  return b.data.publishDate.getTime() - a.data.publishDate.getTime();
+});
+---
+
+<Layout title="Notebook">
+  <Breadcrumb
+    items={[
+      {
+        label: 'Home',
+        href: '/',
+      },
+      {
+        label: 'Notebook'
+      }
+    ]}
+  />
+  <Spacer size={4} />
+  <PageHeader>
+    <PageTitle>Notebook</PageTitle>
+    <Spacer size={1} />
+    <p>主にウェブサイトの制作・開発にかかわる内容をまとめていく。</p>
+  </PageHeader>
+  <Spacer size={8} />
+  <Container
+    sidePadding={2}
+    maxWidth="xl"
+    isCentered={true}
+  >
+    <SectionHeading>Latest posts</SectionHeading>
+    <Spacer size={4} />
+    <NotebookArticleList articles={notebookPostsSortedByPublishDate.slice(0, numberOfNotebookPosts)} />
+    <Spacer size={4} />
+    <div>
+      <LinkButton
+        href="/notebook/archive/"
+      >
+        <Icon name="chevron-right" />
+        過去の記事をすべて見る
+      </LinkButton>
+    </div>
+  </Container>
+  <Spacer size={6} />
+</Layout>

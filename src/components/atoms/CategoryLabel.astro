@@ -1,0 +1,35 @@
+---
+import { getEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+export interface Props {
+  slug:string,
+}
+const {
+  slug,
+} = Astro.props;
+const category:CollectionEntry<'category'> | undefined = await getEntry('category', slug);
+---
+
+{category &&
+  <span class="category-label">
+    {category.data.label}
+  </span>
+}
+
+<style lang="scss">
+  .category-label {
+    align-items: center;
+    border-color: var(--category-label-border-color, currentColor);
+    border-style: solid;
+    border-width: var(--category-label-border-widht, var(--PX-TO-REM));
+    display: inline-flex;
+    font-feature-settings: var(--FFS--PROPORTIONAL);
+    font-size: var(--category-label-font-size, var(--FONT-SIZE--MIN));
+    font-weight: var(--FONT-WEIGHT--B);
+    justify-content: center;
+    line-height: 1.25;
+    padding: .125em .5em;
+    text-align: center;
+    vertical-align: middle;
+  }
+</style>

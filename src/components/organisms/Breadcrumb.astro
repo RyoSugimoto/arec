@@ -1,0 +1,110 @@
+---
+import Container from '@components/organisms/Container.astro';
+export interface BreadcrumbItem {
+  label:string;
+  /** ホームからの相対パス（ `/` で始める） */
+  href?:string;
+}
+export interface Props {
+  /** 最後の要素が現在のページとなる。 */
+  items:Array<BreadcrumbItem>;
+  /** 公開環境のドメイン。この値に `items` 内の要素それぞれが持つ `href` の値が連結されたものが `itemid` の値となる。 */
+  domain?:string;
+  /** 現在のページを可視化しない。 */
+  hideCurrent?:boolean;
+}
+const {
+  items,
+  domain = 'this-website',
+  hideCurrent = false,
+} = Astro.props;
+---
+
+<div
+  class="breadcrumb"
+  aria-label="パンくずリスト"
+>
+  <Container
+    sidePadding={2}
+    maxWidth="xl"
+    isCentered={true}
+  >
+    <ul
+      class="breadcrumb__list"
+      itemscope
+      itemtype="https://schema.org/BreadcrumbList"
+    >
+      {items.map((item, index) => {
+        const isCurrent = (items.length === index + 1);
+        return <li
+          class="breadcrumb__item"
+          itemprop="itemListElement"
+          itemscope
+          itemtype="https://schema.org/ListItem"
+          aria-current={isCurrent}
+        >
+          {item.href &&
+            <a
+              href={item.href}
+              class="breadcrumb__link"
+              itemscope
+              itemtype="https://schema.org/WebPage"
+              itemprop="item"
+              itemid={`https://${domain}${item.href}`}
+            >
+              <span
+                class="readcrumb__name"
+                itemprop="name"
+                aria-label={item.label}
+              >{(hideCurrent && isCurrent) || item.label}</span>
+            </a>
+          ||
+            <span
+              class="readcrumb__name"
+              itemprop="name"
+              aria-label={item.label}
+            >{(hideCurrent && isCurrent) ? '' : item.label}</span>
+          }
+          <meta itemprop="position" content={String(index + 1)} />
+        </li>;
+      })}
+    </ul>
+  </Container>
+</div>
+
+<style lang="scss">
+  .breadcrumb {
+    background-color: var(--breadcrumb-bg-color, transparent);
+    font-family: var(--global-display-font-family);
+    font-feature-settings: var(--FFS--PROPORTIONAL);
+    font-size: var(--breadcrumb-font-size, var(--FONT-SIZE--SM));
+    font-weight: var(--FONT-WEIGHT--M);
+    line-height: var(--LINE-HEIGHT--SM);
+    overflow: auto;
+    padding: var(--breadcrumb-padding, var(--UNIT--2) 0);
+    &__list {
+      display: flex;
+      flex-wrap: nowrap;
+      list-style: none;
+      margin: 0 auto;
+      white-space: nowrap;
+    }
+    &__item {
+      display: flex;
+      &[aria-current] {
+        font-weight: var(--FONT-WEIGHT--B);
+      }
+      &:not(:last-child) {
+        &::after {
+          content: "/";
+          display: inline-block;
+          margin: 0 .5em;
+        }
+      }
+    }
+    &__link {
+      color: var(--breadcrumb-link-fg-color, inherit);
+      display: inline-block;
+    }
+  }
+</style>

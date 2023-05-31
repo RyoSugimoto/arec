@@ -1,0 +1,54 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Breadcrumb from '@components/organisms/Breadcrumb.astro';
+import Spacer from '@components/organisms/Spacer.astro';
+import PageHeader from '@components/organisms/PageHeader.astro';
+import PageTitle from '@components/organisms/PageTitle.astro';
+import Container from '@components/organisms/Container.astro';
+import SectionHeading from '@components/organisms/SectionHeading.astro';
+import ContentFormatter from '@components/organisms/ContentFormatter.astro';
+import Icon from '@components/molecules/Icon.astro';
+---
+
+<Layout title="About">
+  <Breadcrumb
+    items={[
+      {
+        label: 'Home',
+        href: '/',
+      },
+      {
+        label: 'About'
+      }
+    ]}
+  />
+  <Spacer size={4} />
+  <PageHeader>
+    <PageTitle>About</PageTitle>
+    <Spacer size={1} />
+    <p>このサイトについて。</p>
+  </PageHeader>
+  <Spacer size={8} />
+  <Container
+    sidePadding={2}
+    maxWidth="rg"
+    isCentered={true}
+  >
+    <SectionHeading>What is</SectionHeading>
+    <Spacer size={6} />
+    <ContentFormatter>
+      <p>このサイトの名前は「Arec.」（アレク）と読みます。由来は「a record」（記録）の略です。管理者の名前ではありません。サブタイトルに「とあるウェブ制作者の記録」とありますが、そのままというわけです。</p>
+      <p>このサイトは管理者自身が自分が学んだことや考えていることなどを自由にまとめて公開する場です。コンテンツは主にウェブサイト制作に関わるものとなるでしょう。</p>
+      <p>またこのサイトは、ウェブサイト開発フレームワーク「<a href="https://astro.build/">Astro<Icon name="external-link" /></a>」を用いて作成しています。管理者がAstroの機能や使い勝手を試すプレイグラウンドにもしてやろう、という魂胆です。</p>
+    </ContentFormatter>
+    <Spacer size={6} />
+    <SectionHeading>Author</SectionHeading>
+    <Spacer size={6} />
+    <ContentFormatter>
+      <p>社会に出てから「ウェブデザイン」関係の仕事をしてきました。主に「デザイナー」として仕事をしてきましたが、小さな会社で働いていたということもあり、サイトマップの作成から文章のライティング、フロントエンドのコーディング、WordPressテーマの構築など、幅広い領域にてウェブ制作に関わってきました。</p>
+      <p>諸事情から、最近はグラフィックソフトでデザイン作業をすること自体が減りました。フロントエンドに関してはある程度の知識や経験があるため、今後はメインのキャリアを徐々にエンジニア方面へとシフトさせていく方針です。「デザイン」に関するノウハウを持った特色あるエンジニアとして活躍していければなぁ、と思っています。</p>
+    </ContentFormatter>
+    <Spacer size={8} />
+  </Container>
+  <Spacer size={6} />
+</Layout>

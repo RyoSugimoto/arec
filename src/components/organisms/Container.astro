@@ -1,0 +1,62 @@
+---
+export type ContainerWidth = 'xs' | 'sm' | 'rg' | 'md' | 'lg' | 'xl' | '2xl' | 'header' | '';
+export interface Props {
+  name?:string;
+  boxSizing?:'border-box' | 'content-box';
+  isCentered?:boolean;
+  maxWidth?:ContainerWidth;
+  sidePadding?:number;
+}
+const {
+  isCentered = true,
+  maxWidth = '',
+  sidePadding = 0,
+} = Astro.props;
+---
+<div
+  class:list={[
+    'container',
+    isCentered ? `container--is-centered` : '',
+    maxWidth ? `container--${maxWidth}` : ''
+  ]}
+  style={`--container-side-padding: ${sidePadding};`}
+>
+  <slot />
+</div>
+
+<style lang="scss">
+  .container {
+    box-sizing: var(--container-box-sizing, content-box);
+    max-width: var(--container-max-width);
+    padding-left: calc(var(--container-side-padding) * var(--UNIT, .25rem));
+    padding-right: calc(var(--container-side-padding) * var(--UNIT, .25rem));
+    &--is-centered {
+      margin-left: auto;
+      margin-right: auto;
+    }
+    &--xs {
+      --container-max-width: var(--SCREEN-WIDTH--XS, 375px);
+    }
+    &--sm {
+      --container-max-width: var(--SCREEN-WIDTH--SM, 640px);
+    }
+    &--rg {
+      --container-max-width: var(--SCREEN-WIDTH--RG, 768px);
+    }
+    &--md {
+      --container-max-width: var(--SCREEN-WIDTH--MD, 960px);
+    }
+    &--lg {
+      --container-max-width: var(--SCREEN-WIDTH--LG, 1024px);
+    }
+    &--xl {
+      --container-max-width: var(--SCREEN-WIDTH--XL, 1280px);
+    }
+    &--2xl {
+      --container-max-width: var(--SCREEN-WIDTH--2XL, 1536px);
+    }
+    &--hd {
+      --container-max-width: var(--SCREEN-WIDTH--HD, 1920px);
+    }
+  }
+</style>

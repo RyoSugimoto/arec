@@ -1,0 +1,136 @@
+// # テーマ全体で共通で用いる定数を定義するファイル
+// * `:root` に対してカスタムプロパティで定数を設定する。
+// * ## 命名規則
+// * アルファベットは大文字を使う。
+// * 単語同士の区切りには `-` を使う。
+// * バリエーションを作る際は、バリエーション対象の名前の後に `--[バリエーション名]` のようにする。
+@use './settings' as s;
+
+// ## Windowsで游ゴシックをきれいに表示させるための定義（normal）
+@font-face {
+	font-family: 'WindowsYuGothicM';
+	font-weight: 400;
+	src: local('YuGothic-Medium'), // PostScript Name
+	local('Yu Gothic Medium'), // Full Name (for Google Chrome)
+	local('YuGothic-Regular'); // for Windows 8.1
+}
+
+// ## Windowsで游ゴシックをきれいに表示させるための定義（bold）
+@font-face {
+	font-family: 'WindowsYuGothicM';
+	font-weight: 700;
+	src: local('YuGothic-Bold'), // PostScript Name
+	local('Yu Gothic'); // Full Name (for Google Chrome)
+}
+
+:root {
+  // ## サイズ・単位
+  // 1remを何pxとするか（単位なしの数値）
+  --REM-TO-PX: 16;
+  // pxから相応のrem値を算出
+  --PX-TO-REM: calc(1rem / var(--REM-TO-PX, 16));
+  @for $i from 0 through 64 {
+    --PX-TO-REM--#{$i}: calc(var(--PX-TO-REM) * #{$i});
+  }
+  // 何px相当を共通サイジング、スペーシングの最小単位とするか（単位なしの数値）
+  --UNIT-PX: 8;
+  // サイジング、スペーシングの最小単位
+  --UNIT: calc(var(--PX-TO-REM) * var(--UNIT-PX));
+  @for $i from 0 through 64 {
+    --UNIT--#{$i}: calc(var(--PX-TO-REM) * 8 * #{$i});
+  }
+
+  // ## z-index
+  --Z--MODAL: 1000;
+  --Z--MENU: 100;
+  --Z--LAYOUT: 10;
+  --Z--MAIN: 0;
+  --Z--BG: -1;
+
+  // ## 角の丸み
+  --RADIUS--SM: .125rem;
+  --RADIUS--RG: .25rem;
+  --RADIUS--MD: .5rem;
+  --RADIUS--LP: .1rem;
+  // ### 要素の左右を丸くするときの設定値
+  --RADIUS--FULL: 10000px;
+
+  // ## スクリーン幅
+  @each $key, $value in s.$VIEWPORTS {
+    --SCREEN-WIDTH--#{$key}: #{$value}px;
+  }
+
+  // ## カラー値
+  // カラー値のカスタムプロパティを生成する。
+  @each $key, $value in s.$COLORS {
+    --COLOR--#{$key}: #{$value};
+  }
+  // 半透明のカラーの定義
+  --COLOR--GRAY-5--alpha-50: #{rgba(map-get(s.$COLORS, "GRAY-5"), .5)};
+
+  // ## フォントファミリー
+  // ### 合成フォント
+  // @see https://fontsource.org/fonts/sen
+  // @see https://fontsource.org/fonts/noto-sans-jp
+  --FONT-FAMILY--MIXED-SANS:
+    Avenir,
+    "Avenir Next LT Pro",
+    Sen,
+    Montserrat,
+    Corbel,
+    "URW Gothic",
+    "WindowsYuGothicM",
+    "游ゴシック体",
+    YuGothic, "Yu Gothic",
+    'Noto Sans JP',
+    "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro",
+    "メイリオ", Meiryo,
+    "MS Pゴシック", "MS PGothic",
+    sans-serif
+  ;
+  // ### 日本語フォント
+  --FONT-FAMILY--JP-SANS:
+    "WindowsYuGothicM",
+    "游ゴシック体",
+    YuGothic, "Yu Gothic",
+    "Noto Sans JP",
+    "ヒラギノ角ゴ Pro", "Hiragino Kaku Gothic Pro",
+    "メイリオ", Meiryo,
+    "MS Pゴシック", "MS PGothic",
+    sans-serif;
+  --FONT-FAMILY--JP-SERIF:
+    "游明朝体", YuMincho, "Yu Mincho",
+    "ヒラギノ明朝 Pro", "Hiragino Mincho Pro",
+    "MS P明朝", "MS PMincho",
+    serif;
+  // ### 欧文フォント
+  // @see https://modernfontstacks.com/
+  --FONT-FAMILY--SYSTEM-UI: system-ui, sans-serif;
+  --FONT-FAMILY--TRANSITIONAL: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
+	--FONT-FAMILY--GEOMETRIC-HUMANIST: Sen, Avenir, 'Avenir Next LT Pro', Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+	--FONT-FAMILY--MONOSPACE-SLAB-SERIF: 'Nimbus Mono PS', 'Courier New', 'Cutive Mono', monospace;
+	--FONT-FAMILY--MONOSPACE-CODE: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+
+  // ## OpenTypeの拡張設定値
+  --FFS--PROPORTIONAL: "palt";
+
+  // ## フォントサイズ
+  --FONT-SIZE--MIN: .75rem;
+  --FONT-SIZE--SM: .85rem;
+  --FONT-SIZE--RG: 1rem;
+  --FONT-SIZE--MD: 1.25rem;
+  --FONT-SIZE--LG: 1.5rem;
+  --FONT-SIZE--XL: 2rem;
+
+  // ## フォントウエイト
+  --FONT-WEIGHT--L: 200;
+  --FONT-WEIGHT--M: 400;
+  --FONT-WEIGHT--B: 700;
+
+  // ## 行送り
+  --LINE-HEIGHT--NONE: 1;
+  --LINE-HEIGHT--SM: 1.25;
+  --LINE-HEIGHT--RG: 1.5;
+  --LINE-HEIGHT--MD: 1.75;
+  --LINE-HEIGHT--LG: 2;
+}

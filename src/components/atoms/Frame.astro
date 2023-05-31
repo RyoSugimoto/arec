@@ -1,0 +1,48 @@
+---
+export type AspectRatio = string;
+export interface Props {
+  aspectRatio?:AspectRatio;
+}
+const isAspectRatio = (value:string) => {
+  return /\d+\/\d+/.test(value);
+}
+const {
+  aspectRatio = '1/1'
+} = Astro.props;
+
+const [horizontalRatio, verticalRatio] = isAspectRatio(aspectRatio) ? aspectRatio.split('/') : [1, 1];
+---
+
+<span
+  class="frame"
+  style=`
+    --frame-aspect-ratio-h: ${horizontalRatio};
+    --frame-aspect-ratio-v: ${verticalRatio};
+  `
+>
+  <slot />
+</span>
+
+<style>
+  .frame {
+    display: block;
+    height: 0;
+    padding-top: calc(var(--frame-aspect-ratio-v) / var(--frame-aspect-ratio-h) * 100%);
+  }
+</style>
+
+<style is:global lang="scss">
+  .frame {
+    img,
+    video,
+    iframe,
+    .image-placeholder {
+      height: 100%;
+      inset: 0;
+      object-fit: cover;
+      object-position: center;
+      position: absolute;
+      width: 100%;
+    }
+  }
+</style>

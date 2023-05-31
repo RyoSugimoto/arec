@@ -1,0 +1,81 @@
+---
+import { getCollection, getEntryBySlug } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import type { PaginateFunction } from 'astro';
+import Layout from '@layouts/Layout.astro';
+import Breadcrumb from '@components/organisms/Breadcrumb.astro';
+import Spacer from '@components/organisms/Spacer.astro';
+import PageHeader from '@components/organisms/PageHeader.astro';
+import PageTitle from '@components/organisms/PageTitle.astro';
+import Container from '@components/organisms/Container.astro';
+import NotebookArticleList from '@components/partials/NotebookArticleList.astro';
+import Pagination from '@components/organisms/Pagination.astro';
+export async function getStaticPaths({ paginate }:{ paginate: PaginateFunction }) {
+  const notebookPosts = await getCollection('notebook');
+  /** 公開日付が新しい順に並び替えた配列 */
+  const notebookPostsSortedByPublishDate = Array.from(notebookPosts).sort((a, b) => {
+    return b.data.publishDate.getTime() - a.data.publishDate.getTime();
+  });
+  return paginate(notebookPostsSortedByPublishDate, {
+    /** 1ページあたりの記事数 */
+    pageSize: 12,
+  });
+}
+type NotebookEntry = CollectionEntry<'notebook'>;
+const { page } = Astro.props;
+const currentPage = page.currentPage;
+const numberOfPosts = page.total;
+const numberOfPostsThisPageHas = page.size;
+const indexOfTheLastPostInThisPage = page.end;
+const numberOfTheLastPage = page.lastPage;
+const prevUrl = page.url.prev;
+const nextUrl = page.url.next;
+const title = `Notebook Archive（${currentPage}/${numberOfTheLastPage}）`;
+---
+
+<Layout
+  title={title}
+>
+  <Breadcrumb
+    items={[
+      {
+        label: 'Home',
+        href: '/',
+      },
+      {
+        label: 'Notebook',
+        href: '/notebook/',
+      },
+      {
+        label: title
+      }
+    ]}
+  />
+  <Spacer size={4} />
+  <PageHeader>
+    <PageTitle>Notebook Archive<small>（{`${currentPage}/${numberOfTheLastPage}`}）</small></PageTitle>
+  </PageHeader>
+  <Spacer size={4} />
+  <Container
+    sidePadding={2}
+    maxWidth="xl"
+    isCentered={true}
+  >
+    <Pagination
+      currentPage={currentPage}
+      numberOfTheLastPage={numberOfTheLastPage}
+      prevUrl={prevUrl || ''}
+      nextUrl={nextUrl || ''}
+    />
+    <Spacer size={4} />
+    <NotebookArticleList articles={page.data} />
+    <Spacer size={4} />
+    <Pagination
+      currentPage={currentPage}
+      numberOfTheLastPage={numberOfTheLastPage}
+      prevUrl={prevUrl || ''}
+      nextUrl={nextUrl || ''}
+    />
+  </Container>
+  <Spacer size={6} />
+</Layout>

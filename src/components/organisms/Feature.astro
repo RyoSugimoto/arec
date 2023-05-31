@@ -1,0 +1,108 @@
+---
+import { Picture } from '@astrojs/image/components';
+import LinkButton from '@components/atoms/LinkButton.astro';
+import Icon from '@components/molecules/Icon.astro';
+export interface Props {
+  image?:ImageMetadata | null;
+  title:string;
+  description:string;
+  href:string;
+}
+const {
+  image = null,
+  title,
+  description,
+  href,
+} = Astro.props;
+---
+
+<div class="feature">
+  <div class="feature__inner">
+    <div class="feature__visual">
+      {image &&
+        <Picture
+          src={image}
+          alt=""
+          aspectRatio={'3:2'}
+          widths={[1536, 375]}
+        />
+      }
+    </div>
+    <div class="feature__body">
+      <div class="feature__header">
+        <h3 class="feature__header__title">{title}</h3>
+      </div>
+      <div class="feature__description">
+        <span>{description}</span>
+      </div>
+      <div class="feature__action">
+        <LinkButton
+          href={href}
+          modifier="primary"
+        >
+          <Icon name="chevron-right" />
+          {title}のコンテンツを見る
+        </LinkButton>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style lang="scss">
+  @use '@assets/css/tools' as t;
+  .feature {
+    $breakpoint: "SM";
+    &__inner {
+      align-items: center;
+      display: grid;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      @include t.over($breakpoint) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 2rem;
+      }
+    }
+    &__visual {
+      @include t.box-shadow();
+    }
+    &__body {
+      display: grid;
+      gap: calc(var(--LINE-HEIGHT--RG) * 1rem);
+      line-height: var(--LINE-HEIGHT--RG);
+    }
+    &__header {
+      & + * {
+        @include t.over($breakpoint) {
+          margin-top: .5rem;
+        }
+      }
+      &__title {
+        border-bottom: var(--PX-TO-REM--3) solid;
+        display: inline-flex;
+        font-family: var(--global-display-font-family);
+        font-feature-settings: var(--FFS--PROPORTIONAL);
+        font-size: clamp(1rem, 15vw, 3rem);
+        font-weight: var(--FONT-WEIGHT--M);
+        line-height: var(--LINE-HEIGHT--NONE);
+        overflow: hidden;
+        padding: 0 0 .125em;
+        @include t.over($breakpoint) {
+          margin-left: -4rem;
+          padding-left: 4rem;
+        }
+      }
+    }
+    &__description {
+      span {
+        @include t.over($breakpoint) {
+          color: var(
+            --feature-description-fg-color,
+            var(--global-upper-text-color)
+          );
+          padding: .125em;
+        }
+      }
+    }
+  }
+</style>

@@ -1,0 +1,46 @@
+// # SCSSの変数を定義するファイル
+// * このファイルには、CSSに出力されるものは書かないこと。
+// * ここで定義したSCSS変数は、原則要素のスタイルの定義に直接使用しない。
+// * できる限り、 `_constants.scss` 内でカスタムプロパティに値を設定するか、 `tools.scss` 内でミックスインに組み込んで使用する。
+
+// ## ビューポート
+$VIEWPORTS: (
+  "XS": 375,
+  "SM": 640,
+  "RG": 768,
+  "MD": 960,
+  "LG": 1024,
+  "XL": 1280,
+  "2XL": 1536,
+  "HD": 1920,
+);
+
+// ## カラー値
+// * カラー値はSass関数でアルファ値をコントロールできるように、一度SCSSのマップ型で定義し、それを元にカスタムプロパティを生成する。
+$COLORS: (
+  "BLACK": #000,
+  "WHITE": #fff,
+  "GRAY-1": #f6f6f6,
+  "GRAY-2": #e6e6e6,
+  "GRAY-3": #cccccc,
+  "GRAY-4": #b9b9b9,
+  "GRAY-5": #8e8e8e,
+  "GRAY-6": #6c6c6c,
+  "GRAY-7": #444444,
+  "GRAY-8": #2a2a2a,
+  "GRAY-9": #1c1c1c,
+  "WARM-GRAY-1": #f0eeee,
+  "WARM-GRAY-2": #e6e3e3,
+  "WARM-GRAY-3": #d0c9c9,
+  "WARM-GRAY-4": #a5a3a3,
+  "WARM-GRAY-6": #696060,
+  "WARM-GRAY-7": #4e4444,
+  "WARM-GRAY-8": #383232,
+  "WARM-GRAY-9": #2c2929,
+  "BLUE-2": #9df,
+  "BLUE-3": #6bf,
+  "BLUE-5": #38e,
+  "BLUE-6": #26c,
+  "BLUE-7": #15a,
+  "YELLOW-5": #ff0,
+);

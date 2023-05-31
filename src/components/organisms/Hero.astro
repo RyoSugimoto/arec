@@ -1,0 +1,60 @@
+---
+import { Picture } from '@astrojs/image/components';
+export interface Props {
+  image?:ImageMetadata | null;
+}
+const {
+  image = null,
+} = Astro.props;
+---
+
+<div class="hero">
+  <div class="hero__stack">
+    <slot />
+  </div>
+  <div class="hero__image">
+    {image &&
+      <Picture
+        src={image}
+        alt=""
+        aspectRatio={'3:2'}
+        widths={[1536, 640]}
+        loading="eager"
+        decoding="sync"
+      />
+    }
+  </div>
+</div>
+
+<style lang="scss">
+  .hero {
+    background-color: var(--COLOR--GRAY-9);
+    height: calc(var(--svh, 1vh) * 100);
+    height: 100svh;
+    max-height: 768px;
+    min-height: 320px;
+    position: relative;
+    &__stack {
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    &__image {
+      inset: 0;
+      position: absolute;
+      z-index: 0;
+    }
+  }
+</style>
+
+<style is:global lang="scss">
+  .hero {
+    &__image {
+      img {
+        height: 100%;
+        object-fit: cover;
+        width: 100%;
+      }
+    }
+  }
+</style>

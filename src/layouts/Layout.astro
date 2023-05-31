@@ -1,0 +1,72 @@
+---
+import Global from '@layouts/Global.astro';
+import GlobalGrid from '@components/partials/GlobalGrid.astro';
+import SiteHeader from '@components/partials/SiteHeader.astro';
+import SiteFooter from '@components/partials/SiteFooter.astro';
+export interface Props {
+	title:string;
+	description?:string;
+  thumbnail?:string;
+  url?:URL | '';
+  pageKey?:string;
+  headerColorScheme?:string;
+  headerHeight?:string;
+  headerClearBackground?:boolean;
+}
+const {
+  title,
+  description = '',
+  thumbnail = '',
+  url = '',
+  pageKey = '',
+  headerColorScheme = '',
+  headerHeight = 'auto',
+  headerClearBackground = false,
+} = Astro.props;
+---
+
+<Global
+  title={title}
+  description={description}
+  url={url}
+  thumbnail={thumbnail}
+  pageKey={pageKey}
+>
+  <GlobalGrid>
+    <SiteHeader
+      id="site-header"
+      isSticky={true}
+      colorScheme={headerColorScheme}
+      height={headerHeight}
+      clearBackground={headerClearBackground}
+    />
+    <main id="site-main" class="site-main">
+      <slot />
+    </main>
+    <SiteFooter id="site-footer">
+    </SiteFooter>
+  </GlobalGrid>
+  <!-- /.global-grid -->
+</Global>
+
+<script>
+  // `:root` の `scroll-padding-top` の値を `SiteHeader` の高さに応じて調整する。
+  const siteHeader = document.getElementById('site-header');
+  if (siteHeader) {
+    let previousHeight = siteHeader.clientHeight;
+    const setScrollPadding = (value:number) => {
+      document.documentElement.style.setProperty('height', '100px')
+      document.documentElement.style.setProperty('--root-scroll-padding-top', `${value}px`);
+    }
+    const step = () => {
+      const siteHeaderHeight = siteHeader.clientHeight;
+      if (previousHeight !== siteHeaderHeight) {
+        previousHeight = siteHeaderHeight;
+        setScrollPadding(siteHeaderHeight);
+      }
+      requestAnimationFrame(step);
+    }
+    setScrollPadding(previousHeight);
+    requestAnimationFrame(step);
+  }
+</script>

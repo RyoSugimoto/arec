@@ -1,0 +1,91 @@
+---
+
+---
+
+<div
+  class="content-formatter"
+  data-content-format
+>
+  <slot />
+</div>
+
+<style is:global lang="scss">
+  [data-content-format] {
+    > * + {
+      & * {
+        margin-block-start: calc(var(--root-line-height, var(--LINE-HEIGHT--LG, 2)) * 1rem);
+      }
+    }
+
+    > h1, > h2, > h3, > h4, > h5, > h6 {
+      font-family: var(--global-display-font-family);
+      font-feature-settings: var(--FFS--PROPORTIONAL) 1;
+      font-weight: var(--FONT-WEIGHT--M);
+    }
+
+    h2 {
+      background-color: var(--content-formatter-bg-color, var(--global-heading-base-color));
+      color: var(--content-formatter-fg-color, var(--global-heading-text-color));
+      font-size: 1.375rem;
+      font-weight: var(--FONT-WEIGHT--B);
+      line-height: var(--LINE-HEIGHT--RG);
+      margin-block-end: calc(var(--root-line-height, var(--LINE-HEIGHT--LG, 2)) * 1rem);
+      padding: .5rem .75rem;
+    }
+
+    h3 {
+      align-items: center;
+      font-size: 1.25rem;
+      font-weight: var(--FONT-WEIGHT--B);
+      line-height: var(--LINE-HEIGHT--RG);
+      margin-block-end: calc(var(--root-line-height, var(--LINE-HEIGHT--LG, 2)) * 1rem);
+      &::before {
+        background-color: var(--global-heading-base-color);
+        border-radius: var(--RADIUS--FULL);
+        content: "";
+        display: inline-block;
+        height: .75em;
+        margin: 0 .5em 0 0;
+        vertical-align: baseline;
+        width: .75em;
+      }
+    }
+
+    h4 {
+      font-size: 1rem;
+      font-weight: var(--FONT-WEIGHT--B);
+      line-height: var(--LINE-HEIGHT--RG);
+    }
+
+    p {
+      margin-block-end: calc(var(--root-line-height, var(--LINE-HEIGHT--LG, 2)) * 1rem);
+    }
+
+    > ul {
+      font-feature-settings: var(--FFS--PROPORTIONAL);
+      list-style: disc outside;
+      line-height: var(--LINE-HEIGHT--MD);
+      margin-block-end: calc(var(--root-line-height, var(--LINE-HEIGHT--LG, 2)) * 1rem);
+      padding-left: 2.5em;
+      > li {
+        margin: .25em 0;
+      }
+    }
+
+    > ol {
+      font-feature-settings: var(--FFS--PROPORTIONAL);
+      list-style: decimal outside;
+      line-height: var(--LINE-HEIGHT--MD);
+      margin-block-end: calc(var(--root-line-height, var(--LINE-HEIGHT--LG, 2)) * 1rem);
+      padding-left: 2.5em;
+      > li {
+        margin: .25em 0;
+      }
+    }
+
+    .astro-code {
+      margin-block-start: 1rem;
+      padding: 1rem;
+    }
+  }
+</style>

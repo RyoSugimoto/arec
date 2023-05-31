@@ -1,0 +1,30 @@
+---
+import Container from '../../components/organisms/Container.astro';
+export interface Props {
+  id?:string;
+}
+const {
+  id = '',
+} = Astro.props;
+---
+
+<footer id={id ? id : ''} class="site-footer">
+  <Container maxWidth="xl" sidePadding={4}>
+    <slot />
+    <div class="site-footer__copyright">
+      © 2023 Arec.
+    </div>
+  </Container>
+</footer>
+
+<style lang="scss">
+  .site-footer {
+    background-color: var(--site-footer-bg-color, var(--global-dark-base-color));
+    color: var(--site-footer-fg-color, var(--global-dark-text-color));
+    padding: 2rem 0;
+    &__copyright {
+      font-size: var(--site-footer-copyright-font-size, var(--FONT-SIZE--SM));
+      line-height: var(--LINE-HEIGHT--NONE);
+    }
+  }
+</style>

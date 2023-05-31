@@ -1,0 +1,40 @@
+---
+import InlineSVG from '@components/atoms/InlineSVG.astro';
+export type SiteLogoTag = null | 'div' | 'p' | 'h1' | 'h2';
+
+interface Props {
+  tag?: SiteLogoTag;
+}
+const defaultLogoTagName = 'div';
+const {tag} = Astro.props;
+const Tag = tag ? tag : defaultLogoTagName;
+---
+
+<Tag class="site-logo">
+  <a
+    href="/"
+    title="ホーム"
+    aria-label="Arec.（アレク）"
+    class="site-logo__link"
+  >
+    <InlineSVG
+      path="src/assets/svg/logo.svg"
+      fill="currentColor"
+    />
+  </a>
+</Tag>
+
+<style lang="scss">
+  .site-logo {
+    color: var(--site-logo-fg-color, inherit);
+    font-size: 2rem;
+    font-weight: var(--FONT-WEIGHT--B);
+    line-height: var(--site-logo-line-height, var(--LINE-HEIGHT--NONE));
+    width: 5rem;
+    &__link {
+      display: block;
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+</style>

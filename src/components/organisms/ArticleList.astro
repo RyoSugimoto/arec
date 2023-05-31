@@ -1,0 +1,26 @@
+---
+
+---
+
+<div class="article-list">
+  <slot />
+</div>
+
+<style lang="scss">
+  @use '../../assets/css/tools' as t;
+  .article-list {
+    display: grid;
+    gap: .5rem .5rem;
+    grid-template-columns: var(--article-list-grid-template-columns, minmax(0, 1fr));
+    grid-template-rows: auto;
+    @include t.over("SM") {
+      --article-list-grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    @include t.over("MD") {
+      --article-list-grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    @include t.over("2XL") {
+      --article-list-grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+</style>

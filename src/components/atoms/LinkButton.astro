@@ -1,0 +1,68 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+export interface Props {
+  href:string;
+  modifier?:string;
+  attributes?:HTMLAttributes<'a'>;
+}
+const {
+  href,
+  modifier = 'default',
+  attributes = {},
+} = Astro.props;
+---
+
+<a
+  {...attributes}
+  class={`link-button link-button--${modifier}`}
+  href={href}
+>
+  {/* ホバー時にボタンのサイズを変更する場合などにアニメーションが荒ぶらないように、ボタンの見かけのスタイルは内側の要素に適用する。 */}
+  <span class="link-button__body">
+    <slot />
+  </span>
+</a>
+
+<style lang="scss">
+  @use '@assets/css/tools' as t;
+  .link-button {
+    color: var(--link-button-fg-color, currentColor);
+    text-decoration: none;
+    &:active {
+      --link-button-body-transform: scale(.975);
+    }
+    &--fill {
+      @include t.box-shadow();
+      --link-button-bg-color: var(--global-fill-color);
+      --link-button-fg-color: var(--global-fill-inverse-color);
+      --link-button-font-weight: var(--FONT-WEIGHT--B);
+      --link-button-border-width: 0;
+    }
+    &--primary {
+      @include t.box-shadow();
+      --link-button-bg-color: var(--global-primary-color);
+      --link-button-fg-color: var(--global-primary-inverse-color);
+      --link-button-font-weight: var(--FONT-WEIGHT--B);
+      --link-button-border-width: 0;
+    }
+    &__body {
+      align-items: center;
+      background-color: var(--link-button-bg-color, transparent);
+      border-color: var(--link-button-border-color, currentColor);
+      border-style: solid;
+      border-radius: var(--link-button-border-radius, var(--RADIUS--FULL));
+      border-width: var(--link-button-border-width, var(--PX-REM));
+      box-sizing: border-box;
+      display: inline-flex;
+      font-feature-settings: var(--link-button-ffs, var(--FFS--PROPORTIONAL) 1);
+      font-weight: var(--link-button-font-weight, var(--FONT-WEIGHT--M));
+      justify-content: center;
+      line-height: var(--link-button-line-height, var(--LINE-HEIGHT--SM));
+      min-height: var(--link-button-height, 2rem);
+      padding: var(--link-button-padding, .5rem 1.5rem);
+      transform: var(--link-button-body-transform);
+      transition: transform .2s ease-out 0s;
+    }
+  }
+</style>

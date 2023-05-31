@@ -1,0 +1,24 @@
+<h2 class="section-heading">
+  <slot />
+</h2>
+
+<style lang="scss">
+  .section-heading {
+    align-items: flex-end;
+    display: flex;
+    font-family: var(--global-display-font-family);
+    font-feature-settings: var(--FFS--PROPORTIONAL, "palt");
+    font-size: var(--section-heading-font-size, var(--FONT-SIZE--MD, 1.25rem));
+    font-weight: var(--FONT-WEIGHT--B);
+    letter-spacing: .375em;
+    line-height: var(--LINE-HEIGHT--SM, 1.25);
+    &::before {
+      background-color: currentColor;
+      content: var(--section-heading-before-content, "");
+      display: inline-block;
+      height: var(--PX-TO-REM--1);
+      margin: 0 .75em 0 0;
+      width: 2rem;
+    }
+  }
+</style>

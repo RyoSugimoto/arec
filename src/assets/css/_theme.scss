@@ -1,0 +1,99 @@
+@use './tools.scss' as t;
+@use './color-schemes' as c;
+
+:root {
+  // ## Global変数
+  // * 配色については `_color-schemes.scss` でモード別に定義する。
+  --global-font-family: var(--FONT-FAMILY--JP-SANS, sans-serif);
+  --global-display-font-family: var(--FONT-FAMILY--MIXED-SANS, sans-serif);
+  --global-alphabetical-font-family: var(--FONT-FAMILY--GEOMETRIC-HUMANIST, sans-serif);
+  --global-number-font-family: var(--FONT-FAMILY--GEOMETRIC-HUMANIST, sans-serif);
+  --global-code-font-family: var(--FONT-FAMILY--MONOSPACE-SLAB-SERIF, sans-serif);
+
+  // # ルートのスタイル
+  background-color: var(--root-bg-color, var(--global-base-color));
+  color: var(--root-fg-color, var(--global-text-color));
+  color-scheme: light dark;
+  font-family: var(--root-font-family, var(--global-font-family, sans-serif));
+  // ## `font-size` について
+  // NOTE: ブラウザの文字サイズの設定を反映するため、最終的に単位が `%` になるようにする。
+  // 各所での `font-size` の指定には基本的には `rem` の単位を用いる。
+  // 文字サイズの調整用に、 `--root-font-size-zoom-ratio` （倍率）プロパティを設け、基本となる `--root-font-size` に掛け算して表示文字サイズが決定する。
+  font-size: clamp(
+    calc(var(--root-font-size--min, 14) / var(--REM-TO-PX, 16) * 100% * var(--root-font-size-zoom-ratio, .975)),
+    calc(var(--root-font-size, 16) / var(--REM-TO-PX, 16) * 100% * var(--root-font-size-zoom-ratio, .975) + .25vw),
+    calc(var(--root-font-size--max, 20) / var(--REM-TO-PX, 16) * 100% * var(--root-font-size-zoom-ratio, .975))
+  );
+  font-weight: var(--root-font-weight, var(--FONT-WEIGHT--M, 400));
+  line-height: var(--root-line-height, var(--LINE-HEIGHT--LG, 2));
+  // スクロールバーがないときでもスクロールバー分の領域を確保する。
+  scrollbar-gutter: stable;
+  // `SiteHeader`を `sticky` にしているとき、
+  // ページ内リンクに移動したときにコンテンツに重ならないように調整する。
+  scroll-padding-top: var(--root-scroll-padding-top, 0);
+  // NOTE: `scroll-behavior` を設定すると、ページ全体に問答無用で適用されてしまうので、たとえばJSでスクロール位置を一瞬で変更したい場合にも意図せずスムーズスクロールが発生してしまう。
+  // x scroll-behavior: smooth;
+
+  // # OSやブラウザの設定に応じた配色
+  // ## ライトモードの環境向けの配色（デフォルト）
+  // NOTE: ライトモードではより多くの配色パターンが採用できるため、デフォルトとする。
+  @include c.light-color-scheme;
+  @include t.dark() {
+    // ## ダークモードの環境向けの配色
+    // NOTE: ダークモードは配色パターンが限られるため、デフォルト（ダークモード・ファースト）にしてしまうとライトモードのときの配色の可能性を減らすことになってしまう。よって、メディアクエリの中で定義する。
+    @include c.dark-color-scheme;
+  }
+
+  // # ユーザーによるアクセシビリティー設定
+  // ## 配色の設定
+  // ### 明るい
+  &[data-a11y-option-color-scheme=light] {
+    @include c.light-color-scheme;
+  }
+  // ### 暗い
+  &[data-a11y-option-color-scheme=dark] {
+    @include c.dark-color-scheme;
+  }
+  // ## 文字サイズの設定
+  // 小
+  &[data-a11y-option-font-size=sm] {
+    --root-font-size-zoom-ratio: .85;
+  }
+  // 標準
+  &[data-a11y-option-font-size=rg] {
+    --root-font-size-zoom-ratio: 1;
+  }
+  // 大
+  &[data-a11y-option-font-size=md] {
+    --root-font-size-zoom-ratio: 1.125;
+  }
+  // 特大
+  &[data-a11y-option-font-size=lg] {
+    --root-font-size-zoom-ratio: 1.375;
+  }
+}
+
+// # 要素ごとのデフォルトスタイル
+
+::selection {
+  background-color: var(--root-selection-bg-color,var(--global-selection-base-color));
+  color: var(--root-selection-fg-color, var(--global-selection-text-color));
+}
+
+a {
+  color: var(--global-link-color, var(--COLOR--BLUE-2));
+  text-underline-offset: .25em;
+  text-decoration-thickness: var(--PX-TO-REM, calc(1rem / 16));
+  text-decoration-skip-ink: auto;
+}
+
+img, svg, iframe, video {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  width: auto;
+}
+
+button, label, summary {
+  cursor: pointer;
+}

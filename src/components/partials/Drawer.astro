@@ -1,0 +1,73 @@
+---
+import DrawerToggle from './DrawerToggle.astro';
+import DrawerMenu from '@components/partials/DrawerMenu.astro';
+---
+
+<div class="drawer">
+  <div class="drawer__target" data-drawer-drawer hidden>
+    <div class="drawer__overlay" data-drawer-toggler></div>
+    <div class="drawer__body">
+      <div class="drawer__scroll-box">
+        <DrawerMenu />
+      </div>
+    </div>
+  </div>
+  <DrawerToggle />
+</div>
+
+<style lang="scss">
+  .drawer {
+    color: var(--drawer-fg-color, var(--COLOR--GRAY-1));
+    position: relative;
+    z-index: var(--Z--MENU);
+    &__overlay {
+      backdrop-filter: blur(.25rem);
+      background-color: rgba(23, 23, 23, .8);
+      inset: 0;
+      position: fixed;
+      z-index: 0;
+    }
+    &__target {
+      opacity: 1;
+      transition: opacity .5s ease-out 0s;
+      &[hidden] {
+        display: block;
+        opacity: 0;
+        pointer-events: none;
+      }
+      // 内包する `SiteDrawerMenu` のプロパティを操作してアニメーションさせる。
+      --site-drawer-menu-item-opacity: 0;
+      --site-drawer-menu-item-transform: translate3d(-10rem, 0, 0);
+      &[data-drawer-is-expanded] {
+        --site-drawer-menu-item-opacity: 1;
+        --site-drawer-menu-item-transform: translate3d(0, 0, 0);
+      }
+    }
+    &__body {
+      inset: 0 calc(var(--drawer-scrollbar-width, 0) * 1px) 0 0;
+      position: fixed;
+      z-index: 1;
+    }
+    &__scroll-box {
+      display: grid;
+      place-items: center;
+      overflow: auto;
+      overscroll-behavior-y: contain;
+      height: 100%;
+    }
+  }
+</style>
+
+<script>
+  // `drawer.ts` からドロワー用のクラスをインポートする（拡張子はつけない）。
+  import Drawer from '../../assets/js/drawer';
+  const drawer = new Drawer({
+    toggler: '[data-drawer-toggler]',
+    drawer: '[data-drawer-drawer]',
+    inert: '[data-drawer-inert], #site-main, #site-footer',
+  });
+  // ウィンドウリサイズ時にドロワーを閉じる。
+  window.addEventListener('resize', () => {
+    drawer.close();
+  });
+</script>

@@ -1,0 +1,46 @@
+export default [
+  {
+    key: 'home',
+    label: 'Home',
+    href: '/',
+    attributes: {},
+    help: 'ホーム',
+  },
+  {
+    key: 'notebook',
+    label: 'Notebook',
+    href: '/notebook/',
+    attributes: {},
+    help: 'ノート',
+  },
+  // {
+  //   key: 'diary',
+  //   label: 'Diary',
+  //   href: '/diary/',
+  //   attributes: {},
+  //   help: '雑記',
+  // },
+  {
+    key: 'about',
+    label: 'About',
+    href: '/about/',
+    attributes: {},
+    help: 'このサイトについて',
+  },
+  // {
+  //   key: 'github',
+  //   label: 'Github',
+  //   href: 'https://github.com/RyoSugimoto',
+  //   attributes: {},
+  //   help: 'Github',
+  //   isExternal: true,
+  // },
+  // {
+  //   key: 'twitter',
+  //   label: 'Twitter',
+  //   href: 'https://twitter.com/ryo_osugi',
+  //   attributes: {},
+  //   help: 'Twitter',
+  //   isExternal: true,
+  // },
+];

@@ -1,0 +1,86 @@
+---
+import Layout from '@layouts/Layout.astro';
+import Breadcrumb from '@components/organisms/Breadcrumb.astro';
+import { getCollection } from 'astro:content';
+import Spacer from '@components/organisms/Spacer.astro';
+import Container from '@components/organisms/Container.astro';
+import ArticleHeader from '@components/organisms/ArticleHeader.astro';
+import ContentFormatter from '@components/organisms/ContentFormatter.astro';
+import TableOfContents from '@components/organisms/TableOfContents.astro';
+import type { MarkdownHeading } from 'astro';
+export async function getStaticPaths() {
+  const notebookPosts = await getCollection('notebook');
+  const publicPosts = notebookPosts.filter((entry) => {
+    return !entry.data.isDraft;
+  })
+  return publicPosts.map(entry => {
+    return {
+      params: {
+        slug: entry.slug
+      },
+      props: { entry }
+    }
+  });
+}
+const { entry } = Astro.props;
+const { Content, headings } = await entry.render();
+const {
+  title,
+  publishDate,
+  modifyDate = undefined,
+  categories = [],
+  tags = [],
+} = entry.data;
+const h2s = headings.filter((heading:MarkdownHeading) => heading.depth === 2);
+---
+
+<Layout
+  title={title}
+>
+  <Breadcrumb
+    items={[
+      {
+        label: 'Home',
+        href: '/',
+      },
+      {
+        label: 'Notebook',
+        href: '/notebook/',
+      },
+      {
+        label: title
+      },
+    ]}
+  />
+  <Spacer size={4} />
+  <Container maxWidth="rg" sidePadding={2}>
+    <article>
+      { /* NOTE: `categories` の要素の型がわからないので一旦 `any` にしている。 */}
+      <ArticleHeader
+        title={title}
+        date={publishDate}
+        modify={modifyDate}
+        categories={categories.map((item:any) => item.id)}
+      />
+      <Spacer size={6} />
+      {h2s.length >= 1 &&
+        <TableOfContents
+          headings={h2s}
+          description="記事内の、下記のそれぞれの見出しの位置に移動できる。"
+        />
+      }
+      <Spacer size={4} />
+      <ContentFormatter>
+        <Content />
+      </ContentFormatter>
+      <Spacer size={6} />
+      <footer>
+        {tags.length !== 0 &&
+          <div>この記事のキーワード: {tags.join(', ')}</div>
+        }
+      </footer>
+    </article>
+  </Container>
+
+  <Spacer size={6} />
+</Layout>

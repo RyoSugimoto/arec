@@ -1,0 +1,19 @@
+---
+export interface Props {
+  size:number;
+}
+const { size } = Astro.props;
+---
+
+<hr class="spacer" style={`--spacer-size: ${size};`}>
+
+<style>
+  .spacer {
+    display: block;
+    height: calc(var(--spacer-size, 0) * var(--UNIT, 0));
+    margin: 0;
+    padding: 0;
+    visibility: hidden;
+    width: calc(var(--spacer-size, 0) * var(--UNIT, 0));
+  }
+</style>

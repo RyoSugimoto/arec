@@ -1,0 +1,87 @@
+---
+
+---
+
+<button class="drawer-toggle" data-drawer-toggler id="drawer-toggler">
+  <span class="drawer-toggle__icon">
+    <span class="drawer-toggle__icon__bar"></span>
+  </span>
+  <span
+    class="drawer-toggle__text drawer-toggle__text--open"
+    title="メニューを開く"
+  >Menu</span>
+  <span
+    class="drawer-toggle__text drawer-toggle__text--close"
+    title="メニューを閉じる"
+  >Close</span>
+</button>
+
+<style lang="scss">
+  .drawer-toggle {
+    align-items: center;
+    background-color: var(--drawer-toggle-bg-color, var(--global-base-color));
+    border: 0;
+    color: var(--drawer-toggle-fg-color, var(--global-text-color));
+    display: inline-flex;
+    height: 3rem;
+    justify-content: left;
+    overflow: hidden;
+    padding: 0 1rem;
+    position: relative;
+    z-index: var(--Z--MENU);
+    &[aria-expanded=true] {
+      --drawer-toggle-icon-bar-transform: scale(0);
+      --drawer-toggle-icon-before-transform: rotate(45deg);
+      --drawer-toggle-icon-after-transform: rotate(-45deg);
+    }
+    &__icon {
+      height: 1rem;
+      position: relative;
+      width: 1rem;
+      &__bar,
+      &::before,
+      &::after {
+        background-color: currentColor;
+        display: block;
+        content: "";
+        height: var(--PX-TO-REM--1);
+        inset: calc(50% - var(--PX-TO-REM--1) / 2) 0;
+        position: absolute;
+        transition: transform .3s ease-out 0s;
+        width: 100%;
+      }
+      &__bar {
+        transform: var(--drawer-toggle-icon-bar-transform, scale(1));
+      }
+      &::before {
+        transform: var(--drawer-toggle-icon-before-transform, translate3d(0, -.375em, 0));
+      }
+      &::after {
+        transform: var(--drawer-toggle-icon-after-transform, translate3d(0, .375em, 0));
+      }
+    }
+    &__text {
+      display: none;
+      font-family: var(--FONT-FAMILY--MIXED-SANS);
+      font-feature-settings: var(--FFS--PROPORTIONAL);
+      font-size: var(--drawer-toggle-font-size, var(--FONT-SIZE--SM, .75rem));
+      font-weight: var(--FONT-WEIGHT--B);
+      line-height: var(--LINE-HEIGHT--NONE);
+      min-width: 3em;
+      text-align: left;
+      * + & {
+        margin-inline-start: .5rem;
+      }
+      &--open {
+        [aria-expanded=false] & {
+          display: block;
+        }
+      }
+      &--close {
+        [aria-expanded=true] & {
+          display: block;
+        }
+      }
+    }
+  }
+</style>

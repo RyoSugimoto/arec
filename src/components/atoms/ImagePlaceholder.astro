@@ -1,0 +1,26 @@
+---
+import InlineSVG from '@components/atoms/InlineSVG.astro';
+---
+
+<span class="image-placeholder">
+  <span class="image-placeholder__logo">
+    <InlineSVG path="src/assets/svg/logo.svg" width="4rem" />
+  </span>
+</span>
+
+<style lang="scss">
+  .image-placeholder {
+    align-items: center;
+    background-color: var(--image-placeholder-bg-color, var(--global-dark-base-color));
+    display: flex;
+    justify-content: center;
+    &__logo {
+      align-items: center;
+      color: var(--image-placeholder-fg-color, var(--global-dark-text-color));
+      display: flex;
+      font-weight: var(--FONT-WEIGHT--B);
+      line-height: var(--LINE-HEIGHT--NONE);
+      justify-content: center;
+    }
+  }
+</style>

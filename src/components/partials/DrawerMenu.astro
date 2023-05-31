@@ -1,0 +1,102 @@
+---
+import type { HTMLAttributes } from 'astro/types.js';
+import mainMenu from '@assets/data/main-menu.js';
+export interface MainMenuItem {
+  key:string,
+  label:string,
+  href:string,
+  attributes?:HTMLAttributes<'a'>,
+  help?:string
+}
+interface Props {
+  key?: string;
+}
+const {
+  key = ''
+} = Astro.props;
+---
+
+<nav
+  class="site-drawer-menu"
+  aria-label="メインメニュー"
+>
+  <ul class="site-drawer-menu__list">
+    {
+      mainMenu.map((item, index) => {
+        return <li
+          class="site-drawer-menu__item"
+          data-is-current={item.key === key}
+          style={`
+            --site-drawer-menu-item-delay: ${index / 10}s;
+          `}
+        >
+          <a
+            href={item.href}
+            title={item.help || ''}
+            class="site-drawer-menu__link"
+            {...item.attributes}
+          >{item.label}</a>
+        </li>
+      })
+    }
+  </ul>
+</nav>
+
+<style lang="scss">
+  @use '@assets/css/tools' as t;
+  .site-drawer-menu {
+    align-items: center;
+    font-family: var(--global-display-font-family);
+    font-size: var(--site-drawer-menu-font-size, 2rem);
+    font-weight: var(--FONT-WEIGHT--M);
+    display: flex;
+    justify-content: center;
+    line-height: var(--site-drawer-menu-line-height, var(--LINE-HEIGHT--SM, 1.25));
+    &__list {
+      flex-wrap: wrap;
+      justify-content: center;
+      list-style: none;
+      margin: calc(var(--site-drawer-menu-gap--y, .5rem) * -1) calc(var(--site-drawer-menu-gap--x, .5rem) * -1);
+      text-align: center;
+    }
+    &__item {
+      margin: var(--site-drawer-menu-gap--y, .5rem) var(--site-drawer-menu-gap--x, .5rem);
+      transition:
+        opacity .3s ease-out var(--site-drawer-menu-item-delay, 0s),
+        transform .4s ease-out var(--site-drawer-menu-item-delay, 0s);
+      opacity: var(--site-drawer-menu-item-opacity, 1);
+      transform: var(--site-drawer-menu-item-transform);
+    }
+    &__link {
+      color: inherit;
+      display: inline-block;
+      padding: 0 .125em calc(var(--PX-TO-REM) * 2);
+      position: relative;
+      text-decoration: none;
+      &::after {
+        background-color: currentColor;
+        opacity: .75;
+        content: "";
+        inset: auto 0 0 0;
+        height: calc(var(--PX-TO-REM) * 1);
+        position: absolute;
+        transform: var(--site-drawer-menu-decoration-transform, scale(0, 1));
+        transform-origin: var(--site-drawer-menu-decoration-transform-origin, 100% 0);
+        transition: transform .3s ease-out 0s;
+        width: 100%;
+      }
+      @mixin hover-style {
+        --site-drawer-menu-decoration-transform: scale(1, 1);
+        --site-drawer-menu-decoration-transform-origin: 0 0;
+      }
+      &:focus-visible {
+        @include hover-style;
+      }
+      &:hover {
+        @include t.hover {
+          @include hover-style;
+        }
+      }
+    }
+  }
+</style>
